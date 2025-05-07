@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-r from-opttech-dark via-opttech-darkBlue to-opttech-blue text-white overflow-hidden">
+    <div className="relative bg-gradient-to-r from-opttech-dark via-opttech-darkGreen to-opttech-green text-white overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-full h-full opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-opttech-lightBlue rounded-full filter blur-3xl animate-pulse-glow"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-opttech-orange rounded-full filter blur-3xl animate-pulse-glow"></div>
           <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-opttech-accent rounded-full filter blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }}></div>
           <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-opttech-highlight rounded-full filter blur-3xl animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
         </div>
@@ -44,7 +44,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Button asChild size="lg" className="bg-white text-opttech-blue hover:bg-gray-100 hover:shadow-neon transition-all duration-300 backdrop-blur-sm bg-opacity-90">
+            <Button asChild size="lg" className="bg-white text-opttech-green hover:bg-gray-100 hover:shadow-neon transition-all duration-300 backdrop-blur-sm bg-opacity-90">
               <Link to="/products">Nossos Produtos</Link>
             </Button>
             <Button asChild size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white/10 hover:shadow-glow transition-all duration-300">

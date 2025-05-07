@@ -23,11 +23,11 @@ const ProductCard = ({ id, title, description, icon, slug }: ProductCardProps) =
     >
       <Card className="overflow-hidden h-full flex flex-col bg-gradient-to-br from-white to-gray-50 border border-gray-200/50 backdrop-blur-sm shadow-md hover:shadow-neon transition-all duration-300">
         <CardHeader className="pb-4 relative">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-opttech-lightBlue/10 to-transparent rounded-full -mr-16 -mt-16"></div>
-          <div className="w-16 h-16 mb-4 rounded-lg bg-gradient-to-br from-opttech-blue to-opttech-lightBlue flex items-center justify-center shadow-md transform hover:rotate-3 transition-transform duration-300">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-opttech-lightOrange/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+          <div className="w-16 h-16 mb-4 rounded-lg bg-gradient-to-br from-opttech-green to-opttech-lightGreen flex items-center justify-center shadow-md transform hover:rotate-3 transition-transform duration-300">
             <img src={icon} alt={title} className="w-8 h-8" />
           </div>
-          <CardTitle className="text-xl font-bold text-opttech-blue bg-clip-text text-transparent bg-gradient-to-r from-opttech-blue to-opttech-lightBlue">{title}</CardTitle>
+          <CardTitle className="text-xl font-bold text-opttech-green bg-clip-text text-transparent bg-gradient-to-r from-opttech-green to-opttech-lightGreen">{title}</CardTitle>
           <CardDescription className="text-opttech-gray">{description}</CardDescription>
         </CardHeader>
         <CardContent className="flex-grow">
@@ -38,11 +38,11 @@ const ProductCard = ({ id, title, description, icon, slug }: ProductCardProps) =
               alt={title} 
               className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
             />
-            <div className="absolute inset-0 border border-opttech-lightBlue/20 rounded-md"></div>
+            <div className="absolute inset-0 border border-opttech-lightOrange/20 rounded-md"></div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button asChild className="w-full bg-gradient-to-r from-opttech-blue to-opttech-lightBlue hover:from-opttech-darkBlue hover:to-opttech-blue shadow-md hover:shadow-neon transition-all duration-300 group">
+          <Button asChild className="w-full bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange shadow-md hover:shadow-neon transition-all duration-300 group">
             <Link to={`/product/${slug}`} className="flex items-center justify-center">
               Saiba mais
               <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

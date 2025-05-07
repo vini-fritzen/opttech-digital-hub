@@ -63,16 +63,19 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-        // OptTech colors - Enhanced with additional shades
+        // OptTech colors - Updated with moss green and orange
         opttech: {
-          blue: '#0053A0',
-          lightBlue: '#00AEEF',
-          darkBlue: '#003B71',
-          gray: '#58595B',
-          lightGray: '#F5F5F5',
-          accent: '#1EAEDB', // New accent color
-          highlight: '#33C3F0', // New highlight color
-          dark: '#0A192F', // Dark background color
+          green: '#526C50',     // Moss green primary
+          lightGreen: '#7A9972', // Lighter moss green
+          darkGreen: '#374B35',  // Darker moss green
+          orange: '#F97316',     // Vibrant orange
+          lightOrange: '#FEC6A1', // Lighter orange
+          darkOrange: '#D35400', // Darker orange
+          gray: '#58595B',       // Keeping gray for text
+          lightGray: '#F5F5F5',  // Light background color
+          accent: '#F97316',     // Orange accent
+          highlight: '#FEC6A1',  // Light orange highlight
+          dark: '#1E2A1F',       // Dark background color (green-tinted)
         }
 			},
 			borderRadius: {
@@ -108,11 +111,11 @@ export default {
         'pulse-glow': {
           '0%, 100%': {
             opacity: '0.8',
-            boxShadow: '0 0 15px rgba(0, 174, 239, 0.5)',
+            boxShadow: '0 0 15px rgba(249, 115, 22, 0.5)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 30px rgba(0, 174, 239, 0.8)',
+            boxShadow: '0 0 30px rgba(249, 115, 22, 0.8)',
           }
         },
         'slide-in-right': {
@@ -143,9 +146,9 @@ export default {
         'tech-pattern': "url('/tech-pattern.svg')",
       },
       boxShadow: {
-        'neon': '0 0 10px rgba(0, 174, 239, 0.5), 0 0 20px rgba(0, 174, 239, 0.3)',
-        'neon-hover': '0 0 15px rgba(0, 174, 239, 0.6), 0 0 30px rgba(0, 174, 239, 0.4)',
-        'glow': '0 0 20px rgba(0, 83, 160, 0.7)',
+        'neon': '0 0 10px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.3)',
+        'neon-hover': '0 0 15px rgba(249, 115, 22, 0.6), 0 0 30px rgba(249, 115, 22, 0.4)',
+        'glow': '0 0 20px rgba(82, 108, 80, 0.7)',
       }
 		}
 	},

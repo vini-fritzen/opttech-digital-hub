@@ -6,4 +6,30 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  background-color: #FCFCFC;
+  color: #333;
+}
+
+/* Custom scrollbar for a more refined look */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #526C50;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F97316;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #526C50;
 }
