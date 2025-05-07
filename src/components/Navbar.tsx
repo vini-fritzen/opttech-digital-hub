@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,13 +24,18 @@ const Navbar = () => {
   
   return (
     <header 
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
+      className={`fixed w-full top-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "bg-white/90 backdrop-blur-md shadow-md py-2" 
+          : "bg-transparent py-4"
       }`}
     >
       <div className="container mx-auto flex justify-between items-center px-4 md:px-6">
         <Link to="/" className="flex items-center">
-          <img 
+          <motion.img 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
             src="/logo-opttech.png" 
             alt="OptTech Solutions" 
             className="h-10 md:h-12"
@@ -37,42 +43,66 @@ const Navbar = () => {
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <motion.nav 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="hidden md:flex items-center space-x-8"
+        >
           <NavLink to="/">Home</NavLink>
           <NavLink to="/products">Produtos</NavLink>
           <NavLink to="/services">Serviços</NavLink>
           <NavLink to="/about">Sobre Nós</NavLink>
           <NavLink to="/contact">Contato</NavLink>
-          <Button className="bg-opttech-blue hover:bg-opttech-darkBlue text-white">
+          <Button className="bg-gradient-to-r from-opttech-blue to-opttech-lightBlue hover:from-opttech-darkBlue hover:to-opttech-blue text-white shadow-md hover:shadow-neon transition-all duration-300">
             Orçamento
           </Button>
-        </nav>
+        </motion.nav>
         
         {/* Mobile Menu Button */}
-        <Button 
-          variant="ghost" 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
           className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <Menu className="h-6 w-6" />
-        </Button>
+          <Button 
+            variant="ghost" 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2"
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6 text-opttech-blue" />
+            ) : (
+              <Menu className="h-6 w-6 text-opttech-blue" />
+            )}
+          </Button>
+        </motion.div>
       </div>
       
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white w-full py-4 px-4 shadow-md">
-          <nav className="flex flex-col space-y-4">
-            <MobileNavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</MobileNavLink>
-            <MobileNavLink to="/products" onClick={() => setIsMenuOpen(false)}>Produtos</MobileNavLink>
-            <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>Serviços</MobileNavLink>
-            <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>Sobre Nós</MobileNavLink>
-            <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contato</MobileNavLink>
-            <Button className="bg-opttech-blue hover:bg-opttech-darkBlue text-white w-full">
-              Orçamento
-            </Button>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden bg-white/95 backdrop-blur-md w-full py-4 px-4 shadow-md"
+          >
+            <nav className="flex flex-col space-y-4 container mx-auto">
+              <MobileNavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</MobileNavLink>
+              <MobileNavLink to="/products" onClick={() => setIsMenuOpen(false)}>Produtos</MobileNavLink>
+              <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>Serviços</MobileNavLink>
+              <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>Sobre Nós</MobileNavLink>
+              <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contato</MobileNavLink>
+              <Button className="bg-gradient-to-r from-opttech-blue to-opttech-lightBlue hover:from-opttech-darkBlue hover:to-opttech-blue text-white w-full shadow-md transition-all duration-300">
+                Orçamento
+              </Button>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
@@ -80,9 +110,10 @@ const Navbar = () => {
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link 
     to={to} 
-    className="text-opttech-gray hover:text-opttech-blue font-medium transition-colors"
+    className="text-opttech-gray hover:text-opttech-blue font-medium transition-all duration-300 relative group"
   >
     {children}
+    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-opttech-lightBlue transition-all duration-300 group-hover:w-full"></span>
   </Link>
 );
 
@@ -90,7 +121,7 @@ const MobileNavLink = ({ to, onClick, children }: { to: string; onClick: () => v
   <Link 
     to={to} 
     onClick={onClick}
-    className="text-opttech-gray hover:text-opttech-blue font-medium transition-colors py-2 block"
+    className="text-opttech-gray hover:text-opttech-blue font-medium transition-colors py-2 block border-b border-gray-100 hover:pl-2 transition-all duration-300"
   >
     {children}
   </Link>
