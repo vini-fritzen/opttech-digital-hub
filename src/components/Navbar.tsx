@@ -36,7 +36,7 @@ const Navbar = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            src="/logo-opttech.png" 
+            src="/lovable-uploads/82d68fb6-8871-4967-bc00-d7eaeadd201c.png" 
             alt="OptTech Solutions" 
             className="h-10 md:h-12"
           />

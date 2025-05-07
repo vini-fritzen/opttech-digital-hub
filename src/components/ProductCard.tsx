@@ -38,7 +38,7 @@ const ProductCard = ({ id, title, description, icon, slug }: ProductCardProps) =
               alt={title} 
               className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
             />
-            <div className="absolute inset-0 border border-opttech-lightOrange/20 rounded-md"></div>
+            <div className="absolute inset-0 border border-opttech-orange/20 rounded-md"></div>
           </div>
         </CardContent>
         <CardFooter>

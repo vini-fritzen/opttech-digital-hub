@@ -63,19 +63,19 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-        // OptTech colors - Updated with moss green and orange
+        // OptTech colors - Exato verde musgo e laranja do logo
         opttech: {
-          green: '#526C50',     // Moss green primary
-          lightGreen: '#7A9972', // Lighter moss green
-          darkGreen: '#374B35',  // Darker moss green
-          orange: '#F97316',     // Vibrant orange
-          lightOrange: '#FEC6A1', // Lighter orange
-          darkOrange: '#D35400', // Darker orange
-          gray: '#58595B',       // Keeping gray for text
-          lightGray: '#F5F5F5',  // Light background color
-          accent: '#F97316',     // Orange accent
-          highlight: '#FEC6A1',  // Light orange highlight
-          dark: '#1E2A1F',       // Dark background color (green-tinted)
+          green: '#0A2E0A',     // Verde musgo escuro (do logo)
+          lightGreen: '#526C50', // Verde musgo mais claro para contraste
+          darkGreen: '#041504',  // Versão mais escura do verde musgo
+          orange: '#FF8000',     // Laranja exato do logo
+          lightOrange: '#FFA64D', // Laranja mais claro para contraste
+          darkOrange: '#CC6600', // Versão mais escura do laranja
+          gray: '#58595B',       // Mantendo cinza para texto
+          lightGray: '#F5F5F5',  // Fundo claro
+          accent: '#FF8000',     // Laranja do logo como cor de destaque
+          highlight: '#FFC299',  // Laranja muito claro para destaque sutil
+          dark: '#041504',       // Fundo muito escuro (verde-musgo)
         }
 			},
 			borderRadius: {
@@ -111,11 +111,11 @@ export default {
         'pulse-glow': {
           '0%, 100%': {
             opacity: '0.8',
-            boxShadow: '0 0 15px rgba(249, 115, 22, 0.5)',
+            boxShadow: '0 0 15px rgba(255, 128, 0, 0.5)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 30px rgba(249, 115, 22, 0.8)',
+            boxShadow: '0 0 30px rgba(255, 128, 0, 0.8)',
           }
         },
         'slide-in-right': {
@@ -146,9 +146,9 @@ export default {
         'tech-pattern': "url('/tech-pattern.svg')",
       },
       boxShadow: {
-        'neon': '0 0 10px rgba(249, 115, 22, 0.5), 0 0 20px rgba(249, 115, 22, 0.3)',
-        'neon-hover': '0 0 15px rgba(249, 115, 22, 0.6), 0 0 30px rgba(249, 115, 22, 0.4)',
-        'glow': '0 0 20px rgba(82, 108, 80, 0.7)',
+        'neon': '0 0 10px rgba(255, 128, 0, 0.5), 0 0 20px rgba(255, 128, 0, 0.3)',
+        'neon-hover': '0 0 15px rgba(255, 128, 0, 0.6), 0 0 30px rgba(255, 128, 0, 0.4)',
+        'glow': '0 0 20px rgba(10, 46, 10, 0.7)',
       }
 		}
 	},

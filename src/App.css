@@ -20,16 +20,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #526C50;
+  background: #0A2E0A;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #F97316;
+  background: #FF8000;
 }
 
 /* Custom selection color */
 ::selection {
-  background-color: rgba(249, 115, 22, 0.2);
-  color: #526C50;
+  background-color: rgba(255, 128, 0, 0.2);
+  color: #0A2E0A;
 }
