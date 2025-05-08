@@ -61,15 +61,24 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Contact */}
+          {/* Contact & Careers */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Contato</h3>
             <address className="not-italic">
               <p className="mb-2">Endereço: Rua Exemplo, 123</p>
               <p className="mb-2">São Paulo, SP</p>
               <p className="mb-2">Email: contato@opttechsolutions.com.br</p>
-              <p>Telefone: (11) 1234-5678</p>
+              <p className="mb-6">Telefone: (11) 1234-5678</p>
             </address>
+            
+            {/* Work with us section */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Carreira</h3>
+              <Link to="/careers" className="inline-flex items-center text-opttech-orange hover:text-opttech-lightOrange transition-colors">
+                <Briefcase className="w-5 h-5 mr-2" />
+                Trabalhe Conosco
+              </Link>
+            </div>
           </div>
         </div>
         
@@ -106,5 +115,8 @@ const FooterLink = ({ to, children }: { to: string; children: React.ReactNode })
     </Link>
   </li>
 );
+
+// Add Briefcase icon import at the top
+import { Briefcase } from "lucide-react";
 
 export default Footer;
