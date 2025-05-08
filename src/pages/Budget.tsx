@@ -42,6 +42,7 @@ const Budget = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [submitted, setSubmitted] = useState(false);
   const totalSteps = 3;
   
   const form = useForm<BudgetFormValues>({
@@ -121,21 +122,34 @@ const Budget = () => {
   };
 
   const onSubmit = async (values: BudgetFormValues) => {
+    console.log("Budget form submitted with values:", values);
     setIsSubmitting(true);
     
-    // Simulate API request
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log(values);
-    
-    toast({
-      title: "Solicitação de orçamento enviada!",
-      description: "Entraremos em contato em breve com a sua proposta.",
-    });
-    
-    form.reset();
-    setIsSubmitting(false);
-    setStep(1);
+    try {
+      // Simulate API request
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Log submitted data
+      console.log("Budget request submitted:", values);
+      
+      toast({
+        title: "Solicitação de orçamento enviada!",
+        description: "Entraremos em contato em breve com a sua proposta.",
+      });
+      
+      setSubmitted(true);
+      form.reset();
+      setIsSubmitting(false);
+      setStep(1);
+    } catch (error) {
+      console.error("Error submitting budget request:", error);
+      toast({
+        title: "Erro ao enviar solicitação",
+        description: "Houve um problema ao processar sua solicitação. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
   };
 
   const benefits = [
@@ -215,302 +229,334 @@ const Budget = () => {
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              {/* Progress Bar */}
-              <div className="mb-12">
-                <div className="flex justify-between items-center mb-2">
-                  {Array.from({ length: totalSteps }).map((_, index) => (
-                    <div key={index} className="flex flex-col items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step > index + 1 ? 'bg-opttech-orange text-white' : 
-                        step === index + 1 ? 'bg-opttech-green text-white' : 
-                        'bg-gray-200 text-gray-500'
-                      }`}>
-                        {step > index + 1 ? (
-                          <CheckCircle className="w-5 h-5" />
-                        ) : (
-                          index + 1
-                        )}
-                      </div>
-                      <span className={`text-xs mt-2 ${
-                        step >= index + 1 ? 'text-opttech-green' : 'text-gray-500'
-                      }`}>
-                        {index === 0 ? "Informações" : 
-                         index === 1 ? "Detalhes" : "Descrição"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-opttech-green to-opttech-orange transition-all duration-500"
-                    style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-100">
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Step 1: Basic Information */}
-                    {step === 1 && (
-                      <>
-                        <h2 className="text-2xl font-bold mb-6 text-opttech-green">Informações de Contato</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Nome Completo</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Seu nome" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
+              {submitted ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white shadow-lg rounded-xl p-12 text-center border border-gray-100"
+                >
+                  <div className="w-20 h-20 bg-opttech-green/10 rounded-full mx-auto flex items-center justify-center mb-6">
+                    <CheckCircle className="w-10 h-10 text-opttech-green" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-opttech-green mb-4">Solicitação Enviada!</h2>
+                  <p className="text-lg text-gray-600 mb-8">
+                    Recebemos sua solicitação de orçamento. Nossa equipe irá analisá-la e entraremos em contato em breve.
+                  </p>
+                  <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-lg border border-gray-200 mb-8">
+                    <p className="text-sm text-gray-500">
+                      Um e-mail de confirmação foi enviado para o endereço fornecido com os detalhes da sua solicitação.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setSubmitted(false)}
+                    className="bg-opttech-green hover:bg-opttech-darkGreen text-white px-8"
+                  >
+                    Solicitar Novo Orçamento
+                  </Button>
+                </motion.div>
+              ) : (
+                <>
+                  {/* Progress Bar */}
+                  <div className="mb-12">
+                    <div className="flex justify-between items-center mb-2">
+                      {Array.from({ length: totalSteps }).map((_, index) => (
+                        <div key={index} className="flex flex-col items-center">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            step > index + 1 ? 'bg-opttech-orange text-white' : 
+                            step === index + 1 ? 'bg-opttech-green text-white' : 
+                            'bg-gray-200 text-gray-500'
+                          }`}>
+                            {step > index + 1 ? (
+                              <CheckCircle className="w-5 h-5" />
+                            ) : (
+                              index + 1
                             )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="company"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Empresa</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Nome da empresa" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                  <Input type="email" placeholder="seu@email.com" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Telefone</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="(11) 98765-4321" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Step 2: Project Details */}
-                    {step === 2 && (
-                      <>
-                        <h2 className="text-2xl font-bold mb-6 text-opttech-green">Detalhes do Projeto</h2>
-                        <div className="space-y-6">
-                          <FormField
-                            control={form.control}
-                            name="projectType"
-                            render={({ field }) => (
-                              <FormItem className="space-y-3">
-                                <FormLabel>Tipo de Projeto</FormLabel>
-                                <FormControl>
-                                  <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
-                                  >
-                                    {projectTypes.map((type) => (
-                                      <FormItem
-                                        key={type.value}
-                                        className="flex items-center space-x-3 space-y-0 border border-gray-200 rounded-lg p-4 hover:border-opttech-orange/50 transition-colors"
-                                      >
-                                        <FormControl>
-                                          <RadioGroupItem value={type.value} />
-                                        </FormControl>
-                                        <FormLabel className="font-normal cursor-pointer">{type.label}</FormLabel>
-                                      </FormItem>
-                                    ))}
-                                  </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField
-                              control={form.control}
-                              name="budget"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Orçamento Estimado</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Selecione um orçamento" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {budgetRanges.map((range) => (
-                                        <SelectItem key={range.value} value={range.value}>
-                                          {range.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="timeline"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Prazo Desejado</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Selecione um prazo" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {timelineOptions.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                          {option.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
                           </div>
+                          <span className={`text-xs mt-2 ${
+                            step >= index + 1 ? 'text-opttech-green' : 'text-gray-500'
+                          }`}>
+                            {index === 0 ? "Informações" : 
+                             index === 1 ? "Detalhes" : "Descrição"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-opttech-green to-opttech-orange transition-all duration-500"
+                        style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-100">
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Step 1: Basic Information */}
+                        {step === 1 && (
+                          <>
+                            <h2 className="text-2xl font-bold mb-6 text-opttech-green">Informações de Contato</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Nome Completo</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="Seu nome" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="company"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Empresa</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="Nome da empresa" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                      <Input type="email" placeholder="seu@email.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Telefone</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="(11) 98765-4321" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </>
+                        )}
 
-                          <FormField
-                            control={form.control}
-                            name="services"
-                            render={() => (
-                              <FormItem>
-                                <div className="mb-4">
-                                  <FormLabel>Serviços Necessários</FormLabel>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                  {services.map((service) => (
-                                    <FormField
-                                      key={service.id}
-                                      control={form.control}
-                                      name="services"
-                                      render={({ field }) => {
-                                        return (
+                        {/* Step 2: Project Details */}
+                        {step === 2 && (
+                          <>
+                            <h2 className="text-2xl font-bold mb-6 text-opttech-green">Detalhes do Projeto</h2>
+                            <div className="space-y-6">
+                              <FormField
+                                control={form.control}
+                                name="projectType"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-3">
+                                    <FormLabel>Tipo de Projeto</FormLabel>
+                                    <FormControl>
+                                      <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                                      >
+                                        {projectTypes.map((type) => (
                                           <FormItem
-                                            key={service.id}
-                                            className="flex flex-row items-start space-x-3 space-y-0 border border-gray-200 rounded-md p-3 hover:border-opttech-orange/50 transition-colors"
+                                            key={type.value}
+                                            className="flex items-center space-x-3 space-y-0 border border-gray-200 rounded-lg p-4 hover:border-opttech-orange/50 transition-colors"
                                           >
                                             <FormControl>
-                                              <Checkbox
-                                                checked={field.value?.includes(service.id)}
-                                                onCheckedChange={(checked) => {
-                                                  return checked
-                                                    ? field.onChange([...field.value, service.id])
-                                                    : field.onChange(
-                                                        field.value?.filter(
-                                                          (value) => value !== service.id
-                                                        )
-                                                      )
-                                                }}
-                                              />
+                                              <RadioGroupItem value={type.value} />
                                             </FormControl>
-                                            <FormLabel className="font-normal cursor-pointer">
-                                              {service.label}
-                                            </FormLabel>
+                                            <FormLabel className="font-normal cursor-pointer">{type.label}</FormLabel>
                                           </FormItem>
-                                        )
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </>
-                    )}
+                                        ))}
+                                      </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
 
-                    {/* Step 3: Project Description */}
-                    {step === 3 && (
-                      <>
-                        <h2 className="text-2xl font-bold mb-6 text-opttech-green">Descrição do Projeto</h2>
-                        <FormField
-                          control={form.control}
-                          name="description"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Descreva seu projeto</FormLabel>
-                              <FormControl>
-                                <Textarea 
-                                  placeholder="Descreva em detalhes as necessidades do seu projeto, funcionalidades desejadas e qualquer outra informação relevante..." 
-                                  className="min-h-40 resize-none" 
-                                  {...field} 
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                  control={form.control}
+                                  name="budget"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Orçamento Estimado</FormLabel>
+                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Selecione um orçamento" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {budgetRanges.map((range) => (
+                                            <SelectItem key={range.value} value={range.value}>
+                                              {range.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
                                 />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </>
-                    )}
 
-                    <div className="flex justify-between mt-10">
-                      {step > 1 ? (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={prevStep}
-                          className="border-opttech-green text-opttech-green hover:bg-opttech-green/10"
-                        >
-                          Voltar
-                        </Button>
-                      ) : (
-                        <div></div>
-                      )}
-                      
-                      {step < totalSteps ? (
-                        <Button
-                          type="button"
-                          onClick={nextStep}
-                          className="bg-gradient-to-r from-opttech-green to-opttech-lightGreen hover:from-opttech-darkGreen hover:to-opttech-green shadow-md transition-all duration-300"
-                        >
-                          Próximo
-                        </Button>
-                      ) : (
-                        <Button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange shadow-md hover:shadow-neon transition-all duration-300"
-                        >
-                          {isSubmitting ? "Enviando..." : "Solicitar Orçamento"}
-                        </Button>
-                      )}
-                    </div>
-                  </form>
-                </Form>
-              </div>
+                                <FormField
+                                  control={form.control}
+                                  name="timeline"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Prazo Desejado</FormLabel>
+                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Selecione um prazo" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {timelineOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                              {option.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+
+                              <FormField
+                                control={form.control}
+                                name="services"
+                                render={() => (
+                                  <FormItem>
+                                    <div className="mb-4">
+                                      <FormLabel>Serviços Necessários</FormLabel>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      {services.map((service) => (
+                                        <FormField
+                                          key={service.id}
+                                          control={form.control}
+                                          name="services"
+                                          render={({ field }) => {
+                                            return (
+                                              <FormItem
+                                                key={service.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0 border border-gray-200 rounded-md p-3 hover:border-opttech-orange/50 transition-colors"
+                                              >
+                                                <FormControl>
+                                                  <Checkbox
+                                                    checked={field.value?.includes(service.id)}
+                                                    onCheckedChange={(checked) => {
+                                                      return checked
+                                                        ? field.onChange([...field.value, service.id])
+                                                        : field.onChange(
+                                                            field.value?.filter(
+                                                              (value) => value !== service.id
+                                                            )
+                                                          )
+                                                    }}
+                                                  />
+                                                </FormControl>
+                                                <FormLabel className="font-normal cursor-pointer">
+                                                  {service.label}
+                                                </FormLabel>
+                                              </FormItem>
+                                            )
+                                          }}
+                                        />
+                                      ))}
+                                    </div>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        {/* Step 3: Project Description */}
+                        {step === 3 && (
+                          <>
+                            <h2 className="text-2xl font-bold mb-6 text-opttech-green">Descrição do Projeto</h2>
+                            <FormField
+                              control={form.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Descreva seu projeto</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder="Descreva em detalhes as necessidades do seu projeto, funcionalidades desejadas e qualquer outra informação relevante..." 
+                                      className="min-h-40 resize-none" 
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </>
+                        )}
+
+                        <div className="flex justify-between mt-10">
+                          {step > 1 ? (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={prevStep}
+                              className="border-opttech-green text-opttech-green hover:bg-opttech-green/10"
+                            >
+                              Voltar
+                            </Button>
+                          ) : (
+                            <div></div>
+                          )}
+                          
+                          {step < totalSteps ? (
+                            <Button
+                              type="button"
+                              onClick={nextStep}
+                              className="bg-gradient-to-r from-opttech-green to-opttech-lightGreen hover:from-opttech-darkGreen hover:to-opttech-green shadow-md transition-all duration-300"
+                            >
+                              Próximo
+                            </Button>
+                          ) : (
+                            <Button
+                              type="submit"
+                              disabled={isSubmitting}
+                              className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange shadow-md hover:shadow-neon transition-all duration-300 relative overflow-hidden group"
+                            >
+                              <span className="relative z-10">
+                                {isSubmitting ? "Enviando..." : "Solicitar Orçamento"}
+                              </span>
+                              <span className="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></span>
+                            </Button>
+                          )}
+                        </div>
+                      </form>
+                    </Form>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>
