@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +22,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
   
   return (
     <header 
@@ -54,9 +60,11 @@ const Navbar = () => {
           <NavLink to="/services">Serviços</NavLink>
           <NavLink to="/about">Sobre Nós</NavLink>
           <NavLink to="/contact">Contato</NavLink>
-          <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white shadow-md hover:shadow-neon transition-all duration-300">
-            Orçamento
-          </Button>
+          <Link to="/budget">
+            <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white shadow-md hover:shadow-neon transition-all duration-300">
+              Orçamento
+            </Button>
+          </Link>
         </motion.nav>
         
         {/* Mobile Menu Button */}
@@ -96,9 +104,11 @@ const Navbar = () => {
               <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>Serviços</MobileNavLink>
               <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>Sobre Nós</MobileNavLink>
               <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contato</MobileNavLink>
-              <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white w-full shadow-md transition-all duration-300">
-                Orçamento
-              </Button>
+              <Link to="/budget" onClick={() => setIsMenuOpen(false)}>
+                <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white w-full shadow-md transition-all duration-300">
+                  Orçamento
+                </Button>
+              </Link>
             </nav>
           </motion.div>
         )}
@@ -107,24 +117,40 @@ const Navbar = () => {
   );
 };
 
-const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
-  <Link 
-    to={to} 
-    className="text-opttech-gray hover:text-opttech-green font-medium transition-all duration-300 relative group"
-  >
-    {children}
-    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-opttech-orange transition-all duration-300 group-hover:w-full"></span>
-  </Link>
-);
+const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  
+  return (
+    <Link 
+      to={to} 
+      className={`text-opttech-gray hover:text-opttech-green font-medium transition-all duration-300 relative group ${
+        isActive ? "text-opttech-green" : ""
+      }`}
+    >
+      {children}
+      <span className={`absolute -bottom-1 left-0 h-0.5 bg-opttech-orange transition-all duration-300 ${
+        isActive ? "w-full" : "w-0 group-hover:w-full"
+      }`}></span>
+    </Link>
+  );
+};
 
-const MobileNavLink = ({ to, onClick, children }: { to: string; onClick: () => void; children: React.ReactNode }) => (
-  <Link 
-    to={to} 
-    onClick={onClick}
-    className="text-opttech-gray hover:text-opttech-green font-medium transition-colors py-2 block border-b border-gray-100 hover:pl-2 transition-all duration-300"
-  >
-    {children}
-  </Link>
-);
+const MobileNavLink = ({ to, onClick, children }: { to: string; onClick: () => void; children: React.ReactNode }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  
+  return (
+    <Link 
+      to={to} 
+      onClick={onClick}
+      className={`text-opttech-gray hover:text-opttech-green font-medium transition-colors py-2 block border-b border-gray-100 hover:pl-2 transition-all duration-300 ${
+        isActive ? "text-opttech-green pl-2" : ""
+      }`}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export default Navbar;
