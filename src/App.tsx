@@ -20,6 +20,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Careers from "./pages/Careers";
 import JobDetail from "./pages/JobDetail";
+import JobApplication from "./pages/JobApplication";
 import NotFound from "./pages/NotFound";
 
 // Páginas de autenticação
@@ -55,7 +56,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/vagas" element={<Careers />} />
             <Route path="/vaga/:slug" element={<JobDetail />} />
-            <Route path="/trabalhe-conosco" element={<Careers />} />
+            <Route path="/trabalhe-conosco" element={<JobApplication />} />
 
             {/* Autenticação */}
             <Route path="/auth/login" element={<Login />} />

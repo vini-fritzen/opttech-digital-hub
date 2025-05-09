@@ -133,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Cadastro com email e senha
-  const signUp = async (email: string, password: string, fullName: string, role: string = 'client') => {
+  const signUp = async (email: string, password: string, fullName: string, role: string = 'client'): Promise<void> => {
     try {
       setIsLoading(true);
       cleanupAuthState();
@@ -158,7 +158,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "Verifique seu email para confirmar o cadastro.",
       });
       
-      return data;
     } catch (error: any) {
       toast({
         title: "Erro ao cadastrar",
@@ -203,7 +202,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Verificar se o usuário é cliente
   const isClient = !!profile && profile.role === 'client';
 
-  const value = {
+  const value: AuthContextType = {
     session,
     user,
     profile,

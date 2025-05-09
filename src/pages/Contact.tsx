@@ -1,374 +1,245 @@
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import React, { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Phone, Mail, MapPin, Send, CheckCircle } from 'lucide-react';
 
+// Schema para validação do formulário
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Nome deve ter pelo menos 2 caracteres" }),
-  email: z.string().email({ message: "Email inválido" }),
-  phone: z.string().min(10, { message: "Telefone deve ter pelo menos 10 dígitos" }),
-  subject: z.string().min(5, { message: "Assunto deve ter pelo menos 5 caracteres" }),
-  message: z.string().min(10, { message: "Mensagem deve ter pelo menos 10 caracteres" })
+  nome: z.string().min(2, {
+    message: 'Nome deve ter pelo menos 2 caracteres.',
+  }),
+  email: z.string().email({
+    message: 'Email inválido.',
+  }),
+  mensagem: z.string().min(10, {
+    message: 'Mensagem deve ter pelo menos 10 caracteres.',
+  }),
 });
 
-type ContactFormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 const Contact = () => {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   
-  const form = useForm<ContactFormValues>({
+  // Inicializar o formulário
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: ""
-    }
+      nome: '',
+      email: '',
+      mensagem: '',
+    },
   });
 
-  const onSubmit = async (values: ContactFormValues) => {
-    setIsSubmitting(true);
-    
-    // Simulate API request
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log(values);
-    
-    toast({
-      title: "Mensagem enviada com sucesso!",
-      description: "Entraremos em contato em breve.",
-    });
-    
-    form.reset();
-    setIsSubmitting(false);
+  const onSubmit = async (values: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      
+      const { error } = await supabase
+        .from('contatos')
+        .insert([
+          {
+            nome: values.nome,
+            email: values.email,
+            mensagem: values.mensagem,
+          },
+        ]);
+
+      if (error) throw error;
+      
+      toast({
+        title: 'Mensagem enviada com sucesso!',
+        description: 'Entraremos em contato em breve.',
+      });
+      
+      setIsSuccess(true);
+      form.reset();
+      
+      // Reset success state after 5 seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 5000);
+    } catch (error: any) {
+      console.error('Erro ao enviar mensagem:', error);
+      toast({
+        title: 'Erro ao enviar mensagem',
+        description: error.message || 'Por favor, tente novamente mais tarde.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const contactInfo = [
-    {
-      icon: <Phone className="w-5 h-5" />,
-      title: "Telefone",
-      details: ["(11) 1234-5678", "(11) 98765-4321"]
-    },
-    {
-      icon: <Mail className="w-5 h-5" />,
-      title: "Email",
-      details: ["contato@opttechsolutions.com", "suporte@opttechsolutions.com"]
-    },
-    {
-      icon: <MapPin className="w-5 h-5" />,
-      title: "Endereço",
-      details: ["Av. Paulista, 1000", "São Paulo - SP, Brasil"]
-    },
-    {
-      icon: <Clock className="w-5 h-5" />,
-      title: "Horário de Funcionamento",
-      details: ["Segunda - Sexta: 9h às 18h", "Sábado: 9h às 12h"]
-    }
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-grow pt-24">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-opttech-dark to-opttech-green py-16 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="max-w-3xl mx-auto text-center"
-            >
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-opttech-highlight">
-                Entre em Contato
-              </h1>
-              <p className="text-lg md:text-xl mb-8 text-gray-200">
-                Estamos prontos para ajudar. Entre em contato conosco!
-              </p>
-            </motion.div>
-          </div>
-          
-          {/* Decorative Elements */}
-          <motion.div 
-            className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-opttech-orange/20 blur-2xl"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.8, 0.5],
-            }}
-            transition={{ 
-              repeat: Infinity,
-              duration: 8,
-            }}
-          />
-          <motion.div 
-            className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-opttech-lightGreen/10 blur-3xl"
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.4, 0.6, 0.4],
-            }}
-            transition={{ 
-              repeat: Infinity,
-              duration: 10,
-              delay: 2
-            }}
-          />
-        </section>
+    <div className="container mx-auto py-20 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Entre em Contato</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Estamos à disposição para tirar suas dúvidas, ouvir suas sugestões e atender às suas necessidades.
+          </p>
+        </div>
         
-        {/* Contact Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Contact Form */}
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7 }}
-                  className="bg-white rounded-lg shadow-lg p-8 border border-gray-100"
-                >
-                  <h2 className="text-2xl font-bold mb-6 text-opttech-green">Envie uma Mensagem</h2>
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Nome</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Seu nome" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input type="email" placeholder="seu@email.com" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="phone"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Telefone</FormLabel>
-                              <FormControl>
-                                <Input placeholder="(11) 98765-4321" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="subject"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Assunto</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Assunto da mensagem" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center">
+                <Phone className="mr-2 h-5 w-5" /> Telefone
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>(11) 1234-5678</p>
+              <p>(11) 98765-4321</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center">
+                <Mail className="mr-2 h-5 w-5" /> Email
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>contato@opttechsolutions.com.br</p>
+              <p>suporte@opttechsolutions.com.br</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center">
+                <MapPin className="mr-2 h-5 w-5" /> Endereço
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Rua Exemplo, 123</p>
+              <p>São Paulo, SP - CEP: 01234-567</p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="mt-12">
+          <Card>
+            <CardHeader>
+              <CardTitle>Envie uma Mensagem</CardTitle>
+              <CardDescription>
+                Preencha o formulário abaixo e entraremos em contato o mais breve possível.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isSuccess ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">Mensagem Enviada!</h3>
+                  <p className="text-gray-500 mb-4">
+                    Obrigado por entrar em contato. Retornaremos em breve.
+                  </p>
+                  <Button onClick={() => setIsSuccess(false)}>Enviar nova mensagem</Button>
+                </div>
+              ) : (
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="message"
+                        name="nome"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Mensagem</FormLabel>
+                            <FormLabel>Nome</FormLabel>
                             <FormControl>
-                              <Textarea 
-                                placeholder="Sua mensagem..." 
-                                className="min-h-32 resize-none" 
-                                {...field} 
-                              />
+                              <Input placeholder="Seu nome completo" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <Button 
-                        type="submit" 
-                        disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange shadow-md hover:shadow-neon transition-all duration-300"
-                      >
-                        <Send className="mr-2 h-4 w-4" />
-                        {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
-                      </Button>
-                    </form>
-                  </Form>
-                </motion.div>
-                
-                {/* Contact Info */}
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7 }}
-                >
-                  <h2 className="text-2xl font-bold mb-6 text-opttech-green">Informações de Contato</h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {contactInfo.map((info, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100"
-                      >
-                        <div className="flex items-center mb-3">
-                          <div className="mr-3 w-10 h-10 rounded-full bg-opttech-orange/20 flex items-center justify-center text-opttech-orange">
-                            {info.icon}
-                          </div>
-                          <h3 className="font-semibold text-opttech-green">{info.title}</h3>
-                        </div>
-                        <div className="space-y-1 pl-1">
-                          {info.details.map((detail, i) => (
-                            <p key={i} className="text-opttech-gray">{detail}</p>
-                          ))}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-8 bg-gray-100 rounded-lg overflow-hidden shadow-md h-64">
-                    {/* Placeholder for map - In a real implementation, use Google Maps or another mapping solution */}
-                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                      <MapPin className="w-12 h-12 text-opttech-green/50" />
+                      
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="seu@email.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* FAQ Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-              >
-                <h2 className="text-3xl font-bold mb-4 text-opttech-green">Perguntas Frequentes</h2>
-                <p className="text-opttech-gray">
-                  Respostas para as dúvidas mais comuns
-                </p>
-              </motion.div>
-            </div>
-            
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-4">
-                <FaqItem
-                  question="Qual o prazo médio para desenvolvimento de um projeto?"
-                  answer="O prazo varia de acordo com a complexidade do projeto. Projetos simples podem ser concluídos em algumas semanas, enquanto projetos mais complexos podem levar alguns meses. Fazemos uma estimativa detalhada no início do projeto."
-                />
-                <FaqItem
-                  question="Como funciona o processo de orçamento?"
-                  answer="Primeiro, realizamos uma reunião inicial para entender suas necessidades. Em seguida, elaboramos uma proposta detalhada com escopo, cronograma e valores. Após aprovação, iniciamos o desenvolvimento."
-                />
-                <FaqItem
-                  question="Vocês oferecem suporte após a entrega do projeto?"
-                  answer="Sim, oferecemos diferentes planos de suporte e manutenção para garantir que sua solução continue funcionando perfeitamente após a entrega."
-                />
-                <FaqItem
-                  question="É possível fazer modificações durante o projeto?"
-                  answer="Sim, trabalhamos com metodologias ágeis que permitem ajustes ao longo do desenvolvimento. Mudanças significativas no escopo podem impactar prazos e valores, mas sempre discutimos essas questões de forma transparente."
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-const FaqItem = ({ question, answer }: { question: string; answer: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="border border-gray-200 rounded-lg overflow-hidden"
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-6 py-4 text-left flex justify-between items-center ${
-          isOpen ? 'bg-opttech-green text-white' : 'bg-white text-opttech-green'
-        }`}
-      >
-        <span className="font-medium">{question}</span>
-        <svg
-          className={`w-5 h-5 transition-transform duration-300 ${
-            isOpen ? 'transform rotate-180 text-white' : 'text-opttech-orange'
-          }`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{
-          height: isOpen ? 'auto' : 0,
-          opacity: isOpen ? 1 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden"
-      >
-        <div className="p-6 bg-white text-opttech-gray">
-          {answer}
+                    
+                    <FormField
+                      control={form.control}
+                      name="mensagem"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mensagem</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Descreva sua mensagem..." 
+                              className="min-h-32" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Enviar Mensagem
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      </motion.div>
-    </motion.div>
+        
+        <div className="mt-12">
+          <Card>
+            <CardContent className="p-0">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.098097628838!2d-46.652496084417576!3d-23.56525048468312!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1650000000000!5m2!1spt-BR!2sbr" 
+                width="100%" 
+                height="400" 
+                style={{ border: 0 }} 
+                allowFullScreen 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Localização"
+              ></iframe>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 

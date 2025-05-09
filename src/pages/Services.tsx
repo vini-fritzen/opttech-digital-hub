@@ -1,168 +1,189 @@
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ServiceCard from "@/components/ServiceCard";
-import { Briefcase, Code, Smartphone, Database, Cloud, LineChart } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowRight, Search, Filter, Briefcase } from 'lucide-react';
+
+// Interface para os serviços
+interface Servico {
+  id: string;
+  nome: string;
+  descricao: string | null;
+  imagem: string | null;
+  categoria: string | null;
+}
 
 const Services = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoriaParam = searchParams.get('categoria');
   
-  const services = [
-    {
-      id: 1,
-      title: "Desenvolvimento de Software",
-      description: "Soluções personalizadas para atender às necessidades específicas do seu negócio.",
-      icon: <Code className="w-12 h-12 text-white" />,
-      features: ["Sistemas de gestão empresarial", "Integração de APIs", "Automação de processos"]
-    },
-    {
-      id: 2,
-      title: "Aplicativos Mobile",
-      description: "Aplicativos modernos e responsivos para iOS e Android.",
-      icon: <Smartphone className="w-12 h-12 text-white" />,
-      features: ["Design intuitivo", "Funcionalidades offline", "Integração com outros sistemas"]
-    },
-    {
-      id: 3,
-      title: "Banco de Dados",
-      description: "Design e implementação de estruturas de dados eficientes e seguras.",
-      icon: <Database className="w-12 h-12 text-white" />,
-      features: ["Modelagem de dados", "Otimização de consultas", "Migração de dados"]
-    },
-    {
-      id: 4,
-      title: "Cloud Computing",
-      description: "Soluções em nuvem escaláveis e confiáveis.",
-      icon: <Cloud className="w-12 h-12 text-white" />,
-      features: ["Infraestrutura como serviço", "Plataforma como serviço", "Backup e recuperação"]
-    },
-    {
-      id: 5,
-      title: "Análise de Dados",
-      description: "Transforme dados em insights valiosos para seu negócio.",
-      icon: <LineChart className="w-12 h-12 text-white" />,
-      features: ["Business Intelligence", "Dashboard interativos", "Previsão de tendências"]
-    },
-    {
-      id: 6,
-      title: "Consultoria em TI",
-      description: "Orientação especializada para otimizar seus processos tecnológicos.",
-      icon: <Briefcase className="w-12 h-12 text-white" />,
-      features: ["Avaliação de infraestrutura", "Planejamento estratégico", "Governança de TI"]
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [categorias, setCategorias] = useState<string[]>([]);
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string>(categoriaParam || 'todos');
+  const [busca, setBusca] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Buscar serviços do Supabase
+  const fetchServicos = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Construir consulta base
+      let query = supabase
+        .from('servicos')
+        .select('*')
+        .eq('ativo', true);
+      
+      // Filtrar por categoria se não for 'todos'
+      if (categoriaAtiva !== 'todos') {
+        query = query.eq('categoria', categoriaAtiva);
+      }
+      
+      // Executar consulta
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      
+      setServicos(data || []);
+      
+      // Extrair categorias únicas
+      if (categoriaAtiva === 'todos') {
+        const todasCategorias = [...new Set(data?.map(item => item.categoria).filter(Boolean))];
+        setCategorias(['todos', ...todasCategorias]);
+      }
+    } catch (err: any) {
+      console.error('Erro ao buscar serviços:', err);
+      setError('Não foi possível carregar os serviços. Tente novamente mais tarde.');
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  // Efeito para buscar serviços quando a página carrega ou quando muda a categoria
+  useEffect(() => {
+    fetchServicos();
+    
+    // Atualizar parâmetros da URL se a categoria não for 'todos'
+    if (categoriaAtiva !== 'todos') {
+      setSearchParams({ categoria: categoriaAtiva });
+    } else {
+      setSearchParams({});
+    }
+  }, [categoriaAtiva]);
   
+  // Filtrar serviços com base na busca
+  const servicosFiltrados = servicos.filter(servico => 
+    servico.nome.toLowerCase().includes(busca.toLowerCase()) || 
+    (servico.descricao && servico.descricao.toLowerCase().includes(busca.toLowerCase()))
+  );
+
+  // Placeholder para imagem quando não houver
+  const placeholderImage = "https://picsum.photos/400/300?random=";
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-grow pt-24">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-opttech-dark to-opttech-green py-16 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="max-w-3xl mx-auto text-center"
-            >
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-opttech-highlight">
-                Nossos Serviços
-              </h1>
-              <p className="text-lg md:text-xl mb-8 text-gray-200">
-                Soluções tecnológicas inovadoras para impulsionar o crescimento do seu negócio
-              </p>
-            </motion.div>
-          </div>
-          
-          {/* Decorative Elements */}
-          <motion.div 
-            className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-opttech-orange/20 blur-2xl"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.8, 0.5],
-            }}
-            transition={{ 
-              repeat: Infinity,
-              duration: 8,
-            }}
-          />
-          <motion.div 
-            className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-opttech-lightGreen/10 blur-3xl"
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.4, 0.6, 0.4],
-            }}
-            transition={{ 
-              repeat: Infinity,
-              duration: 10,
-              delay: 2
-            }}
-          />
-        </section>
+    <div className="container mx-auto py-20 px-4">
+      <div className="text-center max-w-3xl mx-auto mb-12">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Nossos Serviços</h1>
+        <p className="text-lg text-gray-600 mb-8">
+          Conheça nossa linha completa de serviços e soluções para o seu negócio.
+        </p>
         
-        {/* Services Grid */}
-        <section className="py-16 bg-gradient-to-b from-white to-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <motion.div
-                  key={service.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <ServiceCard 
-                    title={service.title}
-                    description={service.description}
-                    features={service.features}
-                    icon={service.icon}
-                    isHovered={hoveredIndex === index}
-                  />
-                </motion.div>
+        {/* Barra de pesquisa */}
+        <div className="flex w-full max-w-lg mx-auto mb-8">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Buscar serviços..."
+              className="w-full pl-10"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs para categorias */}
+      {categorias.length > 1 && (
+        <Tabs defaultValue={categoriaAtiva} className="w-full mb-8" onValueChange={setCategoriaAtiva}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center">
+              <Filter className="mr-2 h-5 w-5" /> Categorias
+            </h2>
+            <TabsList>
+              {categorias.map((categoria) => (
+                <TabsTrigger key={categoria} value={categoria}>
+                  {categoria === 'todos' ? 'Todos' : categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+                </TabsTrigger>
               ))}
-            </div>
+            </TabsList>
           </div>
-        </section>
-        
-        {/* Call to Action */}
-        <section className="bg-opttech-green py-16">
-          <div className="container mx-auto px-4">
-            <div className="bg-gradient-to-br from-opttech-dark to-opttech-green rounded-2xl p-8 relative overflow-hidden shadow-glow">
-              <div className="absolute inset-0 bg-tech-pattern opacity-5"></div>
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between">
-                <div className="mb-6 md:mb-0 text-white">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                    Pronto para transformar seu negócio?
-                  </h3>
-                  <p className="text-gray-200">
-                    Entre em contato para discutir como podemos ajudar a alcançar seus objetivos
-                  </p>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <a 
-                    href="/budget" 
-                    className="inline-block px-8 py-4 bg-opttech-orange hover:bg-opttech-darkOrange text-white font-medium rounded-lg shadow-lg hover:shadow-neon transition-all duration-300"
-                  >
-                    Solicitar Orçamento
-                  </a>
-                </motion.div>
+        </Tabs>
+      )}
+
+      {isLoading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-10">
+          <p className="text-red-500">{error}</p>
+          <Button 
+            variant="outline" 
+            onClick={() => fetchServicos()} 
+            className="mt-4"
+          >
+            Tentar novamente
+          </Button>
+        </div>
+      ) : servicosFiltrados.length === 0 ? (
+        <div className="text-center py-10">
+          <p className="text-gray-500">Nenhum serviço encontrado.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {servicosFiltrados.map((servico) => (
+            <Card key={servico.id} className="overflow-hidden h-full flex flex-col">
+              <div className="h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
+                {servico.imagem ? (
+                  <img 
+                    src={servico.imagem || `${placeholderImage}${servico.id}`} 
+                    alt={servico.nome} 
+                    className="w-full h-full object-cover transition-transform hover:scale-105"
+                  />
+                ) : (
+                  <Briefcase className="h-20 w-20 text-gray-300" />
+                )}
               </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <CardTitle>{servico.nome}</CardTitle>
+                  {servico.categoria && (
+                    <Badge variant="outline">{servico.categoria}</Badge>
+                  )}
+                </div>
+                <CardDescription className="line-clamp-2">{servico.descricao || 'Sem descrição disponível'}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                {/* Conteúdo adicional pode ser adicionado aqui */}
+              </CardContent>
+              <CardFooter>
+                <Button asChild className="w-full">
+                  <Link to={`/orcamento?servico=${servico.nome}`} className="flex items-center justify-center">
+                    Solicitar Orçamento <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

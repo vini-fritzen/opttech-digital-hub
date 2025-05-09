@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import MainNav from "./MainNav";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,23 +50,9 @@ const Navbar = () => {
         </Link>
         
         {/* Desktop Navigation */}
-        <motion.nav 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="hidden md:flex items-center space-x-8"
-        >
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/products">Produtos</NavLink>
-          <NavLink to="/services">Serviços</NavLink>
-          <NavLink to="/about">Sobre Nós</NavLink>
-          <NavLink to="/contact">Contato</NavLink>
-          <Link to="/budget">
-            <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white shadow-md hover:shadow-neon transition-all duration-300">
-              Orçamento
-            </Button>
-          </Link>
-        </motion.nav>
+        <div className="hidden md:flex">
+          <MainNav />
+        </div>
         
         {/* Mobile Menu Button */}
         <motion.div
@@ -99,16 +86,23 @@ const Navbar = () => {
             className="md:hidden bg-white/95 backdrop-blur-md w-full py-4 px-4 shadow-md"
           >
             <nav className="flex flex-col space-y-4 container mx-auto">
-              <MobileNavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</MobileNavLink>
-              <MobileNavLink to="/products" onClick={() => setIsMenuOpen(false)}>Produtos</MobileNavLink>
-              <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>Serviços</MobileNavLink>
-              <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>Sobre Nós</MobileNavLink>
-              <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contato</MobileNavLink>
-              <Link to="/budget" onClick={() => setIsMenuOpen(false)}>
-                <Button className="bg-gradient-to-r from-opttech-orange to-opttech-lightOrange hover:from-opttech-darkOrange hover:to-opttech-orange text-white w-full shadow-md transition-all duration-300">
-                  Orçamento
-                </Button>
-              </Link>
+              <Link to="/" className="py-2 px-4 hover:bg-gray-100 rounded-md">Home</Link>
+              <Link to="/produtos" className="py-2 px-4 hover:bg-gray-100 rounded-md">Produtos</Link>
+              <Link to="/servicos" className="py-2 px-4 hover:bg-gray-100 rounded-md">Serviços</Link>
+              <Link to="/vagas" className="py-2 px-4 hover:bg-gray-100 rounded-md">Vagas</Link>
+              <Link to="/contato" className="py-2 px-4 hover:bg-gray-100 rounded-md">Contato</Link>
+              <Link to="/orcamento" className="py-2 px-4 hover:bg-gray-100 rounded-md">Orçamento</Link>
+              <div className="border-t pt-4 mt-2">
+                <p className="px-4 py-1 text-sm font-medium text-gray-500">Acesso:</p>
+                <Link to="/auth/login" className="flex items-center py-2 px-4 hover:bg-gray-100 rounded-md">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Área do Cliente
+                </Link>
+                <Link to="/admin/login" className="flex items-center py-2 px-4 hover:bg-gray-100 rounded-md">
+                  <Users className="mr-2 h-4 w-4" />
+                  Acesso Administrativo
+                </Link>
+              </div>
             </nav>
           </motion.div>
         )}
@@ -117,40 +111,7 @@ const Navbar = () => {
   );
 };
 
-const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-  
-  return (
-    <Link 
-      to={to} 
-      className={`text-opttech-gray hover:text-opttech-green font-medium transition-all duration-300 relative group ${
-        isActive ? "text-opttech-green" : ""
-      }`}
-    >
-      {children}
-      <span className={`absolute -bottom-1 left-0 h-0.5 bg-opttech-orange transition-all duration-300 ${
-        isActive ? "w-full" : "w-0 group-hover:w-full"
-      }`}></span>
-    </Link>
-  );
-};
-
-const MobileNavLink = ({ to, onClick, children }: { to: string; onClick: () => void; children: React.ReactNode }) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-  
-  return (
-    <Link 
-      to={to} 
-      onClick={onClick}
-      className={`text-opttech-gray hover:text-opttech-green font-medium transition-colors py-2 block border-b border-gray-100 hover:pl-2 transition-all duration-300 ${
-        isActive ? "text-opttech-green pl-2" : ""
-      }`}
-    >
-      {children}
-    </Link>
-  );
-};
+// Importando ícones para o menu mobile
+import { LogIn, Users } from 'lucide-react';
 
 export default Navbar;

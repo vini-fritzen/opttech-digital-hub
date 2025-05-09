@@ -1,7 +1,8 @@
-
-import Hero from "@/components/Hero";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import React from 'react';
+import Hero from '@/components/Hero';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { products } from "@/data/products";
@@ -21,15 +22,16 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Navbar />
+      <Header />
       <main>
         <Hero />
         
         {/* Products Section */}
         <section className="py-24 bg-white relative" id="produtos">
           {/* Subtle background patterns */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDUzQTAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aC0yVjE2aDJ2MTh6bTQgMEgyOHYtMmgxMnYyeiIvPjxwYXRoIGQ9Ik0yMCAzMmgzNFYxOEgyMHYxNHpNMjAgMTZoMnYyaC0yek0zNCAxNmgydjJoLTJ6TTMwIDE0aDJ2MmgtMnpNMjQgMTZoMnYyaC0yek0zOCAxNmgydjJoLTJ6TTM0IDM2aDJ2MmgtMnpNMjAgMzZoMnYyaC0yek0yNCAzNmgydjJoLTJ6TTMwIDM4aDJ2MmgtMnpNMzggMzZoMnYyaC0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDUzQTAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aC0yVjE2aDJ2MTh6bTQgMEgyOHYtMmgxMnYyeiIvPjxwYXRoIGQ9Ik0yMCAzMmgzNFYxOEgyMHYxNHpNMjAgMTZoMnYyaC0yek0zNCAxNmgydjJoLTJ6TTMwIDE0aDJ2MmgtMnpNMjQgMTZoMnYyaC0yek0zOCAxNmgydjJoLTJ6TTM0IDM2aDJ2MmgtMnpNMjAgMzZoMnYyaC0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
@@ -262,7 +264,7 @@ const Index = () => {
                   description: "Implementamos soluções de IA e machine learning para otimizar processos e análise de dados.",
                   icon: (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                   )
                 },
@@ -399,7 +401,7 @@ const Index = () => {
         </section>
       </main>
       <Footer />
-    </div>
+    </>
   );
 };
 
