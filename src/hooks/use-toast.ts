@@ -1,3 +1,5 @@
+// This is a wrapper around Radix UI's toast
+// https://www.radix-ui.com/primitives/docs/components/toast
 import * as React from "react"
 
 import type {
@@ -25,7 +27,7 @@ const actionTypes = {
 let count = 0
 
 function genId() {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER
+  count = (count + 1) % Number.MAX_VALUE
   return count.toString()
 }
 
@@ -188,4 +190,4 @@ function useToast() {
   }
 }
 
-export { useToast, toast }
+export { toast, useToast }

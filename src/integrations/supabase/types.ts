@@ -9,7 +9,257 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      contatos: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          lido: boolean | null
+          mensagem: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          lido?: boolean | null
+          mensagem: string
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      curriculos: {
+        Row: {
+          arquivo_url: string | null
+          created_at: string
+          email: string
+          id: string
+          lido: boolean | null
+          mensagem: string | null
+          nome: string
+          telefone: string | null
+          vaga_id: string | null
+        }
+        Insert: {
+          arquivo_url?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string | null
+          nome: string
+          telefone?: string | null
+          vaga_id?: string | null
+        }
+        Update: {
+          arquivo_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string | null
+          nome?: string
+          telefone?: string | null
+          vaga_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curriculos_vaga_id_fkey"
+            columns: ["vaga_id"]
+            isOneToOne: false
+            referencedRelation: "vagas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentos_app: {
+        Row: {
+          arquivo_url: string | null
+          cliente_id: string
+          created_at: string
+          id: string
+          link: string | null
+          nome_app: string
+          updated_at: string
+        }
+        Insert: {
+          arquivo_url?: string | null
+          cliente_id: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          nome_app: string
+          updated_at?: string
+        }
+        Update: {
+          arquivo_url?: string | null
+          cliente_id?: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          nome_app?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orcamentos: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          lido: boolean | null
+          mensagem: string | null
+          nome: string
+          servico_solicitado: string | null
+          telefone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string | null
+          nome: string
+          servico_solicitado?: string | null
+          telefone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string | null
+          nome?: string
+          servico_solicitado?: string | null
+          telefone?: string | null
+        }
+        Relationships: []
+      }
+      produtos: {
+        Row: {
+          ativo: boolean | null
+          categoria: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          imagem: string | null
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem?: string | null
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem?: string | null
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      servicos: {
+        Row: {
+          ativo: boolean | null
+          categoria: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          imagem: string | null
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem?: string | null
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem?: string | null
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vagas: {
+        Row: {
+          cargo: string
+          created_at: string
+          descricao: string | null
+          id: string
+          requisitos: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          cargo: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          requisitos?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          requisitos?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
