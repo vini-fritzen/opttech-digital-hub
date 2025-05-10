@@ -1,17 +1,21 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { cleanupAuthState } from '@/utils/authUtils';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   
   const { signIn } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +23,20 @@ const Login = () => {
 
   // Verificar se há um redirecionamento
   const from = location.state?.from || '/';
+  
+  // Verificar se há uma mensagem na location state
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      
+      // Limpar a mensagem após 5 segundos
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +44,22 @@ const Login = () => {
     setIsLoading(true);
     
     try {
+      // Limpar estado de autenticação existente
+      cleanupAuthState();
+      
+      // Tentar fazer sign out global (caso haja alguma sessão)
+      try {
+        await signIn('', '', true); // Parâmetro adicional para forçar logout
+      } catch (err) {
+        // Continuar mesmo se falhar
+      }
+      
       await signIn(email, password);
+      
+      toast({
+        title: "Login realizado com sucesso",
+        description: "Redirecionando para o painel...",
+      });
       
       // Verificar se o usuário é admin ou cliente para redirecionar para o painel correto
       const profile = JSON.parse(localStorage.getItem('supabase.auth.token') || '{}')?.currentSession?.user?.user_metadata;
@@ -37,7 +70,24 @@ const Login = () => {
         navigate('/cliente/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'Falha no login. Verifique suas credenciais.');
+      console.error("Erro de login:", err);
+      
+      // Mensagens de erro mais amigáveis
+      let errorMessage = 'Falha no login. Verifique suas credenciais.';
+      
+      if (err.message.includes('Invalid login credentials')) {
+        errorMessage = 'Email ou senha inválidos. Verifique e tente novamente.';
+      } else if (err.message.includes('Email not confirmed')) {
+        errorMessage = 'Email não confirmado. Verifique sua caixa de entrada.';
+      }
+      
+      setError(errorMessage);
+      
+      toast({
+        title: "Erro de autenticação",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -53,11 +103,21 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {successMessage && (
+            <Alert className="mb-4 bg-green-50">
+              <AlertDescription className="text-green-600">
+                {successMessage}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-                {error}
-              </div>
+              <Alert className="bg-red-50">
+                <AlertDescription className="text-red-600">
+                  {error}
+                </AlertDescription>
+              </Alert>
             )}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">Email</label>

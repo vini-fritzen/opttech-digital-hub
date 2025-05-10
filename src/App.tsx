@@ -26,13 +26,23 @@ import NotFound from "./pages/NotFound";
 // Páginas de autenticação
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 // Páginas de administração
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/Products";
+import AdminServices from "./pages/admin/Services";
+import AdminJobs from "./pages/admin/Jobs";
+import AdminResumes from "./pages/admin/Resumes";
+import AdminQuotes from "./pages/admin/Quotes";
+import AdminContacts from "./pages/admin/Contacts";
+import AdminClients from "./pages/admin/Clients";
 
 // Páginas de cliente
 import ClienteDashboard from "./pages/cliente/Dashboard";
 import ClienteDocuments from "./pages/cliente/Documents";
+import ClientePerfil from "./pages/cliente/Perfil";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +71,8 @@ const App = () => (
             {/* Autenticação */}
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
 
             {/* Painel Admin */}
             <Route
@@ -68,6 +80,62 @@ const App = () => (
               element={
                 <AuthGuard requireAuth requireAdmin>
                   <AdminDashboard />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminProducts />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/services"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminServices />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/jobs"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminJobs />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/resumes"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminResumes />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/quotes"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminQuotes />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/contacts"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminContacts />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/admin/clients"
+              element={
+                <AuthGuard requireAuth requireAdmin>
+                  <AdminClients />
                 </AuthGuard>
               }
             />
@@ -81,12 +149,19 @@ const App = () => (
                 </AuthGuard>
               }
             />
-            
             <Route
               path="/cliente/documentos"
               element={
                 <AuthGuard requireAuth requireClient>
                   <ClienteDocuments />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/cliente/perfil"
+              element={
+                <AuthGuard requireAuth requireClient>
+                  <ClientePerfil />
                 </AuthGuard>
               }
             />

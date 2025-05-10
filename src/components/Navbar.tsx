@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MainNav from "./MainNav";
 
@@ -110,8 +110,5 @@ const Navbar = () => {
     </header>
   );
 };
-
-// Importando ícones para o menu mobile
-import { LogIn, Users } from 'lucide-react';
 
 export default Navbar;
