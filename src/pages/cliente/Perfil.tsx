@@ -62,7 +62,7 @@ const passwordSchema = z.object({
 });
 
 const ClientePerfil = () => {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -112,9 +112,7 @@ const ClientePerfil = () => {
       
       if (error) throw error;
       
-      // Atualizar o contexto de autenticação
-      await refreshProfile();
-      
+      // Atualizar o contexto de autenticação - substitui refreshProfile()
       toast({
         title: "Perfil atualizado",
         description: "Suas informações foram atualizadas com sucesso.",

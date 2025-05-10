@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import AdminLayout from '@/components/layout/AdminLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';

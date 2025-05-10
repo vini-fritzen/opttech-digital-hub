@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { AdminLayout } from '@/components/layout/AdminLayout';
+import AdminLayout from '@/components/layout/AdminLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';
@@ -10,6 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@/components/ui/card';
 import {
   Table,
@@ -532,9 +532,9 @@ const AdminProducts = () => {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Ativo</FormLabel>
-                      <FormDescription>
+                      <CardDescription>
                         Produtos ativos são exibidos no site.
-                      </FormDescription>
+                      </CardDescription>
                     </div>
                     <FormControl>
                       <Switch

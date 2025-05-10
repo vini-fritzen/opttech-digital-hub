@@ -12,10 +12,10 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { UserCircle, LogIn, Users } from 'lucide-react';
+import { UserCircle, LogIn, Users, LogOut } from 'lucide-react';
 
 const MainNav = () => {
-  const { user, isAdmin, isClient } = useAuth();
+  const { user, profile, isAdmin, isClient, signOut } = useAuth();
 
   return (
     <div className="flex items-center space-x-4">
